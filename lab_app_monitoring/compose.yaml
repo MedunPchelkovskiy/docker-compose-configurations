@@ -1,0 +1,29 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: lab-prometheus
+    ports:
+      - "9092:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - prometheus_lab_data:/prometheus
+    networks:
+      - lab_app_monitoring
+    restart: unless-stopped
+
+  blackbox:
+    image: quay.io/prometheus/blackbox-exporter:latest
+    container_name: blackbox-exporter
+    ports:
+      - "9115:9115"
+    volumes:
+      - ./blackbox.yaml:/etc/blackbox_exporter/config.yaml
+    networks:
+      - lab_app_monitoring
+    restart: unless-stopped
+
+networks:
+  lab_app_monitoring:
+
+volumes:
+  prometheus_lab_data:
