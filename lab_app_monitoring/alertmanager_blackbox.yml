@@ -1,0 +1,11 @@
+route:
+  group_by: ['alertname']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 1h
+  receiver: 'web.hook'
+
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'https://webhook.site/7619847d-fdfc-4cff-b09c-d4c58218ed40'

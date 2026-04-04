@@ -1,3 +1,5 @@
+name: monitoring
+
 services:
   prometheus:
     image: prom/prometheus:latest
@@ -5,7 +7,8 @@ services:
     ports:
       - "9092:9090"
     volumes:
-      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./alerts_rules_blackbox_exporter.yml:/etc/prometheus/alerts_rules_blackbox_exporter.yml
       - prometheus_lab_data:/prometheus
     networks:
       - lab_app_monitoring
@@ -17,10 +20,22 @@ services:
     ports:
       - "9115:9115"
     volumes:
-      - ./blackbox.yaml:/etc/blackbox_exporter/config.yaml
+      - ./blackbox.yml:/etc/blackbox_exporter/config.yml
     networks:
       - lab_app_monitoring
     restart: unless-stopped
+
+  alertmanager:
+    image: quay.io/prometheus/alertmanager:latest
+    container_name: alertmanager
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager_blackbox.yml:/etc/alertmanager/alertmanager.yml
+    networks:
+      - lab_app_monitoring
+    restart: unless-stopped
+
 
 networks:
   lab_app_monitoring:
